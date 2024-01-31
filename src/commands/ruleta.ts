@@ -1,38 +1,36 @@
-import { ApplicationCommandOptionType, EmbedBuilder } from 'discord.js'
+import { SlashCommandBuilder, Client, CommandInteraction, EmbedBuilder, GuildMember } from 'discord.js'
 
 export default {
-    name: 'ruleta',
-    description: 'Ruleta entre nombres.',
-    options: [
-        {
-            name: 'nombres',
-            description: 'Nombres separados por comas.',
-            type: ApplicationCommandOptionType.String,
-            required: true
-        }
-    ],
-    callback: async (interaction) => {
+    slashCommand: new SlashCommandBuilder()
+        .setName('ruleta')
+        .setDescription('Ruleta entre nombres.')
+        .addStringOption(option => 
+            option.setName('nombres')
+                .setDescription('Nombres separados por espacios.')
+                .setRequired(true)
+        )
+    ,
+    callback: async (client: Client, interaction: CommandInteraction) => {
         // https://discordjs.guide/popular-topics/embeds.html#embed-preview
         try {
-            if (!interaction.isChatInputCommand()) return
             await interaction.deferReply()
             const valorantMaps = ['Breeze', 'Haven', 'Bind', 'Split', 'Icebox', 'Ascent', 'Fracture', 'Sunset', 'Pearl', 'Lotus']
             if (interaction.commandName === 'ruleta') {
-                console.log(interaction.options.getString('nombres'))
-                const names = interaction.options.getString('nombres').split(',').filter(name => name !== ' ' && name !== '')
-                if (names.length < 2) return await interaction.editReply('Necesitas al menos dos nombres.')
-                const sortedNames = names.sort(() => Math.random() - 0.5)
-                const teams = { one: [], two: [] }
+                const names: string[] | undefined = interaction.options.get('nombres')?.value?.toString().split(' ').filter(name => name !== ' ' && name !== '')
+                if (!names || names.length < 2) return await interaction.editReply('Necesitas al menos dos nombres.')
+                const sortedNames: string[] = names.sort(() => Math.random() - 0.5)
+                const teams: { one: string[], two: string[] } = { one: [], two: [] }
                 for (let i = 0; i < sortedNames.length; i++) {
                     if (i % 2 === 0) teams.one.push(sortedNames[i])
                     else teams.two.push(sortedNames[i])
                 }
+                
                 const embed = new EmbedBuilder()
                     .setColor('Random')
                     .setTitle(`Mapa: ${valorantMaps[Math.floor(Math.random() * valorantMaps.length)] || 'Mapa no encontrado'}`)
                     .setAuthor({
-                        name: `Ruleta de ${interaction.member.nickname || interaction.member.user.globalName}`,
-                        iconURL: interaction.user.displayAvatarURL({ dynamic: true }),
+                        name: `Ruleta de ${(interaction.member as GuildMember).nickname || interaction.user.displayName}`,
+                        iconURL: interaction.user.displayAvatarURL(({ dynamic: true } as any)),
                     })
                     .setThumbnail('https://cdn-icons-png.flaticon.com/512/10199/10199802.png')
                     .addFields(

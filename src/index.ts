@@ -14,7 +14,7 @@ client.on('ready', client => {
     console.clear()
     console.log(`✅ ${client.user.tag} is online.`)
     client.user.setActivity({
-        name: `Zarouu's stream`,
+        name: `In development`,
         type: ActivityType.Watching,
     })
     commandHandler(client)

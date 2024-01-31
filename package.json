@@ -2,10 +2,13 @@
   "name": "apple-bot",
   "version": "1.0.0",
   "description": "",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon && cls"
+    "nodemon": "nodemon && cls",
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node ."
   },
   "author": "",
   "license": "ISC",
@@ -14,6 +17,8 @@
     "dotenv": "^16.4.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.3"
+    "@types/node": "^20.11.13",
+    "nodemon": "^3.0.3",
+    "tsx": "^4.7.0"
   }
 }
