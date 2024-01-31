@@ -19,7 +19,9 @@ export default {
             await interaction.deferReply()
             const valorantMaps = ['Breeze', 'Haven', 'Bind', 'Split', 'Icebox', 'Ascent', 'Fracture', 'Sunset', 'Pearl', 'Lotus']
             if (interaction.commandName === 'ruleta') {
-                const names = interaction.options.getString('nombres').split(',')
+                console.log(interaction.options.getString('nombres'))
+                const names = interaction.options.getString('nombres').split(',').filter(name => name !== ' ' && name !== '')
+                if (names.length < 2) return await interaction.editReply('Necesitas al menos dos nombres.')
                 const sortedNames = names.sort(() => Math.random() - 0.5)
                 const teams = { one: [], two: [] }
                 for (let i = 0; i < sortedNames.length; i++) {
@@ -47,7 +49,7 @@ export default {
                 await interaction.editReply({ embeds: [embed] })
             }
         } catch (error) {
-            throw new Error('Error en "ruleta.js": ' + error)
+            console.error('Error en "ruleta.js": ' + error)
         }
     }
 }
