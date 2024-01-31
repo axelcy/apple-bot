@@ -8,13 +8,13 @@ export default async(client) => {
         for (const commandFile of commandFiles) {
             importedModules.push((await import(`./${commandFile.split('src/')[1]}`)).default)
         }
-        await registerCommands(importedModules)
+        await registerCommands(importedModules, client)
         client.on('interactionCreate', async (interaction) => {
             if (!interaction.isChatInputCommand()) return
             const importedModule = importedModules.find(importedModule => importedModule.name === interaction.commandName)
             importedModule.callback(interaction)
         })
     } catch (error) {
-        throw new Error('Command handler error: ' + error)
+        console.error('Command handler error: ' + error)
     }
 }

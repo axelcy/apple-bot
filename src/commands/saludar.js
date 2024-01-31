@@ -12,7 +12,7 @@ export default {
             await interaction.editReply('Hola')
 
         } catch (error) {
-            throw new Error('Error en "saludar.js": ' + error)
+            console.error('Error en "saludar.js": ' + error)
         }
     }
 }

@@ -1,16 +1,18 @@
 import { REST, Routes } from 'discord.js'
 import 'dotenv/config'
 
-export default async(commands) => {
+export default async(commands, client) => {
     try {
         const rest = new REST({ version: '10' }).setToken(process.env.TOKEN)
         console.log('Registering slash commands...')
-        await rest.put(
-            Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
-            { body: commands }
+        client.guilds.cache.map(async(guild) => 
+            await rest.put(
+                Routes.applicationGuildCommands(process.env.CLIENT_ID, guild.id), // process.env.GUILD_ID
+                { body: commands }
+            )
         )
         console.log('Slash commands were registered successfully!')
     } catch (error) {
-        throw new Error('Register commands error: ' + error)
+        console.error('Register commands error: ' + error)
     }
 }

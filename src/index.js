@@ -18,6 +18,7 @@ client.on('ready', client => {
         type: ActivityType.Watching,
     })
     commandHandler(client)
+    // console.log(client.guilds.cache.map(guild => `🔍 ${guild.name} (${guild.id})`))
 })
 
 client.login(process.env.TOKEN)
