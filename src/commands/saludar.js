@@ -4,7 +4,6 @@ export default {
     name: 'saludar',
     description: 'Prueba de comando modulo.',
     callback: async (interaction) => {
-        console.log('CALLBACK SUMAR!!')
         // https://discordjs.guide/popular-topics/embeds.html#embed-preview
         try {
             if (!interaction.isChatInputCommand()) return

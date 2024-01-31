@@ -12,7 +12,6 @@ export default {
         }
     ],
     callback: async (interaction) => {
-        console.log('CALLBACK RULETA!!')
         // https://discordjs.guide/popular-topics/embeds.html#embed-preview
         try {
             if (!interaction.isChatInputCommand()) return
