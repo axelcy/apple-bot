@@ -13,8 +13,9 @@ const client = new Client({
 client.on('ready', client => {
     console.clear()
     console.log(`✅ ${client.user.tag} is online.`)
+    const activity = process.env.NODE_ENV === 'development' ? `In development` : `Zarouu's stream`
     client.user.setActivity({
-        name: `In development`,
+        name: activity,
         type: ActivityType.Watching,
     })
     commandHandler(client)
