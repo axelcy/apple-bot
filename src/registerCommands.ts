@@ -8,6 +8,7 @@ export default async(commands: Object[], client: Client) => {
         if (!process.env.GUILD_ID) return console.error('GUILD_ID not found in .env file.')
         // const CLIENT_ID = process.env.CLIENT_ID
         const rest = new REST({ version: '10' }).setToken(process.env.TOKEN)
+        rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID), { body: [] })
         console.log('Registering slash commands...')
         if (process.env.NODE_ENV === 'development') {
             await rest.put(
@@ -17,7 +18,8 @@ export default async(commands: Object[], client: Client) => {
         }
         else if (process.env.NODE_ENV === 'production') {
             await rest.put(
-                Routes.applicationCommands(process.env.CLIENT_ID),
+                // Routes.applicationCommands(process.env.CLIENT_ID),
+                Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
                 { body: commands }
             )
         }
