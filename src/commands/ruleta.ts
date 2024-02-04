@@ -1,8 +1,9 @@
 import { SlashCommandBuilder, Client, CommandInteraction, EmbedBuilder, GuildMember } from 'discord.js'
+import path = require('path')
 
 export default {
     slashCommand: new SlashCommandBuilder()
-        .setName('ruleta')
+        .setName(path.basename(__filename, '.ts'))
         .setDescription('Ruleta entre nombres.')
         .addStringOption(option => 
             option.setName('nombres')
@@ -46,7 +47,7 @@ export default {
                 await interaction.editReply({ embeds: [embed] })
             }
         } catch (error) {
-            console.error('Error en "ruleta.js": ' + error)
+            console.error(`Error en "${path.basename(__filename, '.ts')}.ts": ` + error)
         }
     }
 }
