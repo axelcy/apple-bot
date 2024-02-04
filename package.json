@@ -7,11 +7,13 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node ."
+    "start": "node .",
+    "image": "tsx src/main.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@napi-rs/canvas": "^0.1.44",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.1"
   },

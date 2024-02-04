@@ -2,6 +2,8 @@ import { Client, IntentsBitField, ActivityType } from 'discord.js'
 import 'dotenv/config'
 import commandHandler from './commandHandler.js'
 
+process.env.NODE_NO_WARNINGS = '1' 
+
 const client = new Client({
     intents: [
         IntentsBitField.Flags.Guilds,
@@ -10,6 +12,8 @@ const client = new Client({
         IntentsBitField.Flags.MessageContent,
     ]
 })
+
+
 client.on('ready', client => {
     console.clear()
     console.log(`✅ ${client.user.tag} is online.`)

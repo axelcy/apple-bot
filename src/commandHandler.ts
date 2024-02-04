@@ -1,8 +1,8 @@
 import { Client, SlashCommandBuilder } from "discord.js"
 import registerCommands from "./registerCommands.js"
-import getAllFiles from "./utils/getAllFiles.js"
+import getAllFiles from "./libs/getAllFiles.js"
 
-export default async(client: Client) => {
+export default async (client: Client) => {
     try {
         if (!process.env.INDEX_FILE_FOLDER) return console.error('INDEX_FILE_FOLDER environment variable not set.')
         const commandFiles = getAllFiles(`${process.env.INDEX_FILE_FOLDER}/commands`)
