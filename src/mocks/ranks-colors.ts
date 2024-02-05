@@ -1,10 +1,17 @@
-export const unrankedData = {
+export const unrankedData: {
+	rank: string,
+	color: string,
+	rank_points: number
+
+} = {
 	rank: 'Unranked',
 	color: '#c2c2c2',
 	rank_points: 0
 }
 
-export const tierColors = {
+export const tierColors: {
+	[key: string]: string
+} = {
 	'Iron 1': '#838283',
 	'Iron 2': '#838283',
 	'Iron 3': '#838283',
@@ -32,7 +39,9 @@ export const tierColors = {
 	'Radiant': '#ffffaa'
 };
 
-export const tierTranslations = {
+export const tierTranslations: {
+	[key: string]: string
+} = {
 	'Iron 1': 'Hierro 1',
 	'Iron 2': 'Hierro 2',
 	'Iron 3': 'Hierro 3',

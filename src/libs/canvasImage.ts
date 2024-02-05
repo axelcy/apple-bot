@@ -1,76 +1,89 @@
 import * as Canvas from '@napi-rs/canvas'
-import * as fs from 'fs'
-import { tierColors, unrankedData, tierTranslations } from './mocks/ranks-colors'
+// import * as fs from 'fs'
+import { tierColors, unrankedData, tierTranslations } from '../mocks/ranks-colors'
 
-console.clear()
+// LINKS DE LA API
 // https://api.henrikdev.xyz/valorant/v1/account/CLG%20Manzana%20Roja/love
+// https://api.henrikdev.xyz/valorant/v1/mmr/latam/CLG%20Manzana%20Roja/love
 
-async function makeCanvas() {
+export default async function canvasImage(name: string): Promise<Buffer | undefined> {
 try {
 
-async function fetchData(name: string) {
+async function fetchData(endpoint: '/account' | '/mmr/latam') {
     const parsedName = name.replace(/ /g, '%20').replace(/#/g, '/')
     try {
-        const response = await fetch(`https://api.henrikdev.xyz/valorant/v1/mmr/latam/${parsedName}`, {
+        const response = await fetch(`https://api.henrikdev.xyz/valorant/v1${endpoint}/${parsedName}`, {
             headers: {
                 Authorization: 'HDEV-73be5985-8e36-43d0-be8c-ad71124e7bee'
             }
         })
-        if (response?.status === 429) throw new Error('EXPLOTACIÓN DE LA API MUCHAS LLAMADAS :V')
+        if (response?.status === 429) console.error('EXPLOTACIÓN DE LA API MUCHAS LLAMADAS :V')
         return (await response.json()).data
     } catch (error) {
         console.error(error)
     }
 }
 
-// valoProfile.images.large
-const cardImageUrl = 'https://media.valorant-api.com/playercards/fd4d518f-4760-33b8-7265-9794ceadba16/wideart.png'
-
-const data = {
-    currenttier: 19,
-    currenttierpatched: "Diamond 2",
-    images: {
-        small: "https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/19/smallicon.png",
-        large: "https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/19/largeicon.png",
-        triangle_down: "https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/19/ranktriangledownicon.png",
-        triangle_up: "https://media.valorant-api.com/competitivetiers/03621f52-342b-cf4e-4f86-9350a49c6d04/19/ranktriangleupicon.png"
-    },
-    ranking_in_tier: 43,
-    mmr_change_to_last_game: -11,
-    elo: 1643,
-    name: "CLG Manzana Roja",
-    tag: "love",
-    old: false
-}
-
+const [account, mmr] = await Promise.all([fetchData('/account'), fetchData('/mmr/latam')])
+if (!account || !mmr) return undefined
 Canvas.GlobalFonts.loadFontsFromDir('testing/fonts')
 const divisionX = 230
 
-const canvas = Canvas.createCanvas(1000, 450)
+const canvas = Canvas.createCanvas(950, 400)
 const ctx = canvas.getContext('2d')
 
-// const valoProfile = await fetchData('CLG Manzana Roja#love')
-
 // #region ------------- FONDO -------------
-const background = await Canvas.loadImage('https://png.pngtree.com/thumb_back/fw800/background/20231105/pngtree-blank-dark-wallpaper-elegant-black-texture-background-image_13747095.png')
-ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
-
+// const background = await Canvas.loadImage('background.png')
+// ctx.drawImage(background, 0, 0, canvas.width, canvas.height)
 // #endregion
 
-// #region ------------- IMAGEN RANGO -------------
-const rankImage = await Canvas.loadImage(data.images.large) // valoProfile.images.large
-ctx.drawImage(rankImage, 20, 20, 192, 192)
+// #region ------------- RANGO Y ULTIMA PARTIDA -------------
+const rankImage: {
+    image: Canvas.Image | null,
+    x: number,
+    y: number,
+    size: number
+} = {
+    image: null,
+    x: 20,
+    y: 20,
+    size: 192
+}
 
+rankImage.image = await Canvas.loadImage(mmr.images.large)
+if (rankImage.image) ctx.drawImage(rankImage.image, rankImage.x, rankImage.y, rankImage.size, rankImage.size)
+
+ctx.font = `60px Ubuntu`
+let prefix = ''
+if (mmr.mmr_change_to_last_game > 0) {
+    ctx.fillStyle = '#23fed7'
+    prefix = '+'
+}
+else if (mmr.mmr_change_to_last_game < 0) ctx.fillStyle = '#f0615f'
+else ctx.fillStyle = '#f3f3f3'
+
+ctx.fillText(
+    prefix + mmr.mmr_change_to_last_game.toString(), 
+    divisionX / 2 - ctx.measureText(prefix + mmr.mmr_change_to_last_game.toString()).width / 2, 
+    rankImage.y + rankImage.size + 70
+)
+    
+ctx.font = `30px Ubuntu`
+ctx.fillStyle = '#969696'
+ctx.fillText(
+    'Last Match', 
+    divisionX / 2 - ctx.measureText('Last Match').width / 2,
+    rankImage.y + rankImage.size + 120
+)
 // #endregion
 
 // #region ------------- ESCRIBIR NOMBRE -------------
 const nameTextY = 60
 ctx.font = `40px Ubuntu`
 ctx.fillStyle = '#f3f3f3'
-ctx.fillText('CLG Manzana Roja', divisionX, nameTextY) // valoProfile.name
+ctx.fillText(mmr.name, divisionX, nameTextY)
 ctx.fillStyle = '#969696'
-ctx.fillText('#love', divisionX + ctx.measureText('CLG Manzana Roja').width, nameTextY) // valoProfile.tag
-
+ctx.fillText('#' + mmr.tag, divisionX + ctx.measureText(mmr.name).width, nameTextY)
 // #endregion
 
 // #region ------------- PLAYER CARD -------------
@@ -109,8 +122,7 @@ const playerCard: {
     height: 128 * 1.5,
 }
 
-playerCard.image = await Canvas.loadImage(cardImageUrl)
-
+playerCard.image = await Canvas.loadImage(account.card.wide)
 drawRoundedImage({ ...playerCard, borderRadius: 20 });
 
 // #endregion
@@ -131,10 +143,10 @@ const rankNameText = {
 
 ctx.font = `60px Ubuntu`
 ctx.fillStyle = '#f3f3f3'
-// if (tierColors[data.currenttierpatched]) ctx.fillStyle = tierColors[data.currenttierpatched]
-// else ctx.fillStyle = unrankedData.color
+if (tierColors[mmr.currenttierpatched]) ctx.fillStyle = tierColors[mmr.currenttierpatched]
+else ctx.fillStyle = unrankedData.color
 textShadow(2, 2, 10, 'black')
-ctx.fillText(data.currenttierpatched.toUpperCase(), rankNameText.x, rankNameText.y) // valoProfile.name
+ctx.fillText(tierTranslations[mmr.currenttierpatched].toUpperCase(), rankNameText.x, rankNameText.y)
 textShadow(0, 0, 0, 'transparent')
 
 // #endregion
@@ -173,14 +185,14 @@ const bar = {
 ctx.fillStyle = '#fff9'
 roundRect(bar)
 ctx.fillStyle = '#23fed7'
-roundRect({ ...bar, width: bar.width * (data.ranking_in_tier / 100) })
+roundRect({ ...bar, width: bar.width * (mmr.ranking_in_tier / 100) })
 
 const rankRatingTextMarginY = 40
 const rankRatingTextMarginX = 10
 ctx.font = `25px Ubuntu`
 ctx.fillText(
-    data.ranking_in_tier.toString(), 
-    divisionX + bar.width - ctx.measureText((data.ranking_in_tier + '/ 100').toString()).width - rankRatingTextMarginX, 
+    mmr.ranking_in_tier.toString(), 
+    divisionX + bar.width - ctx.measureText((mmr.ranking_in_tier + '/ 100').toString()).width - rankRatingTextMarginX, 
     bar.y + bar.height + rankRatingTextMarginY
 )
 ctx.fillStyle = '#f3f3f3'
@@ -193,8 +205,9 @@ ctx.fillText(
 // #endregion
 
 // #region ------------- GUARDAR IMAGEN -------------
-const buffer = canvas.toBuffer('image/png')
-fs.writeFileSync('testing/out.png', buffer)
+const buffer: Buffer = canvas.toBuffer('image/png')
+return buffer
+// fs.writeFileSync('testing/out.png', buffer)
 
 // #endregion
 
@@ -203,5 +216,3 @@ catch (error) {
     console.error(error)
 }
 }
-
-makeCanvas()

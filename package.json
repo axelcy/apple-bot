@@ -8,7 +8,7 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node .",
-    "image": "tsx src/main.ts"
+    "image": "tsx src/libs/canvasImage.ts"
   },
   "author": "",
   "license": "ISC",
