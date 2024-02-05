@@ -26,7 +26,7 @@ async function fetchData(endpoint: '/account' | '/mmr/latam') {
 
 const [account, mmr] = await Promise.all([fetchData('/account'), fetchData('/mmr/latam')])
 if (!account || !mmr) return undefined
-Canvas.GlobalFonts.loadFontsFromDir('testing/fonts')
+Canvas.GlobalFonts.loadFontsFromDir('public/fonts')
 const divisionX = 230
 
 const canvas = Canvas.createCanvas(950, 400)
