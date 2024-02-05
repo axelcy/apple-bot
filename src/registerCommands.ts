@@ -12,12 +12,17 @@ export default async (commands: Object[], client: Client) => {
         console.log(`Registering slash commands...`)
         const CLIENT_ID = process.env.CLIENT_ID
         if (process.env.NODE_ENV === 'production') {
-            client.guilds.cache.forEach(async guild => {
-                await rest.put(
-                    Routes.applicationGuildCommands(CLIENT_ID, guild.id),
-                    { body: commands }
-                ) 
-            })
+            try {
+                await Promise.all(client.guilds.cache.map(async guild => {
+                    await rest.put(
+                        Routes.applicationGuildCommands(CLIENT_ID, guild.id),
+                        { body: commands }
+                    )
+                }))
+            }
+            catch (error) {
+                console.error('Register commands error on production: ' + error)
+            }
         }
         else {
             await rest.put(

@@ -1,6 +1,7 @@
 import { Client, SlashCommandBuilder } from "discord.js"
 import registerCommands from "./registerCommands.js"
 import getAllFiles from "./libs/getAllFiles.js"
+import path = require('path')
 
 export default async (client: Client) => {
     try {
@@ -10,7 +11,7 @@ export default async (client: Client) => {
 
         const importedModules: { slashCommand: SlashCommandBuilder, callback: Function }[] = []
         for (const commandFile of commandFiles) {
-            // console.log(`Importing ${commandFile}`)
+            console.log(`Importing ${commandFile}`)
             importedModules.push((await import(`./${commandFile.split(`${process.env.INDEX_FILE_FOLDER}/`)[1]}`)).default)
         }
         await registerCommands(importedModules.map(module => module.slashCommand), client)

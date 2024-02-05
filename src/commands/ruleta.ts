@@ -3,7 +3,7 @@ import path = require('path')
 
 export default {
     slashCommand: new SlashCommandBuilder()
-        .setName(path.basename(__filename, '.ts'))
+        .setName(path.basename(__filename, path.extname(__filename)))
         .setDescription('Ruleta entre nombres.')
         .addStringOption(option => 
             option.setName('nombres')
@@ -47,7 +47,7 @@ export default {
                 await interaction.editReply({ embeds: [embed] })
             }
         } catch (error) {
-            console.error(`Error en "${path.basename(__filename, '.ts')}.ts": ` + error)
+            console.error(`Error en "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}": ` + error)
         }
     }
 }

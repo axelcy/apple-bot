@@ -4,7 +4,7 @@ import canvasImage from '../libs/canvasImage'
 
 export default {
     slashCommand: new SlashCommandBuilder()
-        .setName(path.basename(__filename, '.ts'))
+        .setName(path.basename(__filename, path.extname(__filename)))
         .setDescription('Genera una imagen con la información de la cuenta de Valorant.')
         .addStringOption(option => 
             option.setName('cuenta')
@@ -19,7 +19,7 @@ export default {
             if (!buffer) return await interaction.reply({ content: `No se encontró la cuenta: ${interaction.options.get('cuenta')?.value?.toString() || ''}`, ephemeral: true })
             await interaction.editReply({ files: [buffer] })
         } catch (error) {
-            console.error(`Error en "${path.basename(__filename, '.ts')}.ts": ` + error);
+            console.error(`Error en "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}": ` + error);
         }
     }
 }
