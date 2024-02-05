@@ -23,7 +23,10 @@ client.on('ready', client => {
         type: ActivityType.Watching,
     })
     commandHandler(client)
-    // console.log(client.guilds.cache.map(guild => `🔍 ${guild.name} (${guild.id})`))
+    console.log(client.guilds.cache.map(guild => `🔍 ${guild.name} (${guild.id})`))
+    // client.guilds.cache.forEach(guild => {
+    //     if (guild.id === '1090019772458078208') guild.leave()
+    // })
 })
 
 client.login(process.env.TOKEN)

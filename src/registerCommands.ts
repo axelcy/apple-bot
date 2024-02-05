@@ -10,10 +10,21 @@ export default async (commands: Object[], client: Client) => {
         const rest = new REST().setToken(process.env.TOKEN)
 
         console.log(`Registering slash commands...`)
-        await rest.put(
-            Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
-            { body: commands }
-        )
+        const CLIENT_ID = process.env.CLIENT_ID
+        if (process.env.NODE_ENV === 'production') {
+            client.guilds.cache.forEach(async guild => {
+                await rest.put(
+                    Routes.applicationGuildCommands(CLIENT_ID, guild.id),
+                    { body: commands }
+                ) 
+            })
+        }
+        else {
+            await rest.put(
+                Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
+                { body: commands }
+            )
+        }
         // hacer que si está en producción lo haga una vez por cada server en el que esté
         console.log('Slash commands were registered successfully as: ' + process.env.NODE_ENV)
 
