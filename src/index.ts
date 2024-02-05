@@ -17,13 +17,13 @@ const client = new Client({
 client.on('ready', client => {
     console.clear()
     console.log(`✅ ${client.user.tag} is online.`)
+    console.log(client.guilds.cache.map(guild => `🔍 ${guild.name} (${guild.id})`))
     const activity = process.env.NODE_ENV === 'development' ? `In development` : `Zarouu's stream`
     client.user.setActivity({
         name: activity,
         type: ActivityType.Watching,
     })
     commandHandler(client)
-    console.log(client.guilds.cache.map(guild => `🔍 ${guild.name} (${guild.id})`))
 })
 
 client.login(process.env.TOKEN)

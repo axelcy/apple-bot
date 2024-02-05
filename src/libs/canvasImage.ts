@@ -186,10 +186,10 @@ ctx.fillStyle = '#fff9'
 roundRect(bar)
 ctx.fillStyle = '#23fed7'
 var completedBarProgress
-if (mmr.mmr_in_tier > 1) completedBarProgress = mmr.ranking_in_tier / 100
-else if (mmr.mmr_in_tier === 1) completedBarProgress = 2
-if (completedBarProgress) roundRect({ ...bar, width: bar.width * completedBarProgress })
-// roundRect({ ...bar, width: bar.width * (0 / 100) })
+if (mmr.ranking_in_tier > 1) completedBarProgress = mmr.ranking_in_tier / 100
+else if (mmr.ranking_in_tier === 1) completedBarProgress = 2
+
+if (completedBarProgress) roundRect({ ...bar, width: bar.width * (mmr.ranking_in_tier / 100) })
 
 const rankRatingTextMarginY = 40
 const rankRatingTextMarginX = 10
@@ -210,7 +210,7 @@ ctx.fillText(
 
 // #region ------------- GUARDAR IMAGEN -------------
 const buffer: Buffer = canvas.toBuffer('image/png')
-fs.writeFileSync('out.png', buffer)
+// fs.writeFileSync('out.png', buffer)
 return buffer
 
 // #endregion
@@ -220,5 +220,3 @@ catch (error) {
     console.error(error)
 }
 }
-
-canvasImage('DonPoio#poio')
