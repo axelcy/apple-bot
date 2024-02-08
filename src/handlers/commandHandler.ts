@@ -1,7 +1,6 @@
 import { Client, SlashCommandBuilder } from "discord.js"
-import registerCommands from "./registerCommands.js"
-import getAllFiles from "./libs/getAllFiles.js"
-import path = require('path')
+import registerCommands from "../libs/registerCommands.js"
+import getAllFiles from "../libs/getAllFiles.js"
 
 export default async (client: Client) => {
     try {
@@ -11,10 +10,13 @@ export default async (client: Client) => {
 
         const importedModules: { slashCommand: SlashCommandBuilder, callback: Function }[] = []
         for (const commandFile of commandFiles) {
-            console.log(`Importing ${commandFile}`)
-            importedModules.push((await import(`./${commandFile.split(`${process.env.INDEX_FILE_FOLDER}/`)[1]}`)).default)
+            const commandFileName = commandFile.split(`${process.env.INDEX_FILE_FOLDER}/`)[1]
+            console.log(`📥 - Importing: ${commandFileName.split('commands/')[1]}`)
+            importedModules.push((await import(`../${commandFileName}`)).default)
         }
         await registerCommands(importedModules.map(module => module.slashCommand), client)
+        console.log('✅ - Slash commands were registered successfully as: ' + process.env.NODE_ENV)
+        
         client.on('interactionCreate', async (interaction) => {
             if (!interaction.isChatInputCommand()) return
             const importedModule = importedModules.find(importedModule => importedModule.slashCommand.name === interaction.commandName)

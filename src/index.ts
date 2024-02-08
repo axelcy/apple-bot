@@ -1,8 +1,8 @@
-import { Client, IntentsBitField, ActivityType } from 'discord.js'
+import { Client, IntentsBitField } from 'discord.js'
+import eventHandler from './handlers/eventHandler.js'
 import 'dotenv/config'
-import commandHandler from './commandHandler.js'
 
-process.env.NODE_NO_WARNINGS = '1' 
+process.env.NODE_NO_WARNINGS = '1'
 
 const client = new Client({
     intents: [
@@ -13,17 +13,6 @@ const client = new Client({
     ]
 })
 
-
-client.on('ready', client => {
-    console.clear()
-    console.log(`✅ ${client.user.tag} is online.`)
-    console.log(client.guilds.cache.map(guild => `🔍 ${guild.name} (${guild.id})`))
-    const activity = process.env.NODE_ENV === 'development' ? `In development` : `Zarouu's stream`
-    client.user.setActivity({
-        name: activity,
-        type: ActivityType.Watching,
-    })
-    commandHandler(client)
-})
+eventHandler(client)
 
 client.login(process.env.TOKEN)
