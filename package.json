@@ -15,8 +15,7 @@
   "dependencies": {
     "@napi-rs/canvas": "^0.1.44",
     "discord.js": "^14.14.1",
-    "dotenv": "^16.4.1",
-    "openai": "^4.27.0"
+    "dotenv": "^16.4.1"
   },
   "devDependencies": {
     "@types/node": "^20.11.13",
