@@ -18,6 +18,6 @@ export default async (client: Client) => {
             })
         }
     } catch (error) {
-        console.error('Event handler error: ' + error)
+        console.error('Event handler error:\n' + error)
     }
 }

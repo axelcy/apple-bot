@@ -77,7 +77,7 @@ To create a new command for your bot, follow these steps:
                 const ping = reply.createdTimestamp - interaction.createdTimestamp
                 await interaction.editReply(`🏓 Pong! Client: ${ping}ms | Websocket: ${client.ws.ping}ms`)
             } catch (error) {
-                console.error(`Error in "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}": ` + error)
+                console.error(`Error in "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}":\n` + error)
             }
         }
     }

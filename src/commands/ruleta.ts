@@ -47,7 +47,7 @@ export default {
                 await interaction.editReply({ embeds: [embed] })
             }
         } catch (error) {
-            console.error(`Error en "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}": ` + error)
+            console.error(`Error en "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}":\n` + error)
         }
     }
 }

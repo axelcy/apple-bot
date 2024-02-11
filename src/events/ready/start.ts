@@ -8,5 +8,6 @@ export default async (client: Client) => {
         name: activity,
         type: ActivityType.Watching,
     })
+    if (process.env.DISABLE_COMMANDS === '1') return
     commandHandler(client)
 }

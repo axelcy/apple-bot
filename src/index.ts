@@ -3,6 +3,7 @@ import eventHandler from './handlers/eventHandler.js'
 import 'dotenv/config'
 
 process.env.NODE_NO_WARNINGS = '1'
+// process.env.DISABLE_COMMANDS = '1'
 
 const client = new Client({
     intents: [

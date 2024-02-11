@@ -18,7 +18,7 @@ export default {
             if (!buffer) return await interaction.reply({ content: `No se encontró la cuenta: ${interaction.options.get('cuenta')?.value?.toString() || ''}`, ephemeral: true })
             await interaction.editReply({ files: [buffer] })
         } catch (error) {
-            console.error(`Error en "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}": ` + error);
+            console.error(`Error en "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}":\n` + error);
         }
     }
 }
@@ -42,10 +42,10 @@ async function fetchData(endpoint: '/account' | '/mmr/latam') {
                 Authorization: 'HDEV-73be5985-8e36-43d0-be8c-ad71124e7bee'
             }
         })
-        if (response?.status === 429) console.error('EXPLOTACIÓN DE LA API MUCHAS LLAMADAS :V')
+        if (response?.status === 429) console.error('Error: Valorant API Rate Limit Exceeded.')
         return (await response.json()).data
     } catch (error) {
-        console.error(error)
+        console.error('Error fetching valorant data:\n' + error)
     }
 }
 
@@ -242,6 +242,6 @@ return buffer
 
 }
 catch (error) {
-    console.error(error)
+    console.error('Error creating canvas rank image:\n' + error)
 }
 }

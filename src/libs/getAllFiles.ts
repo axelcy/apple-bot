@@ -15,6 +15,6 @@ export default (directory: string, foldersOnly = false) => {
 
         return fileNames
     } catch (error) {
-        console.error('Error getting all files: ' + error)
+        console.error('Error getting all files:\n' + error)
     }
 }
