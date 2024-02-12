@@ -1,6 +1,10 @@
 import { Schema, model } from "mongoose"
 
 const minutesSchema = new Schema({
+    legibleData: {
+        type: String,
+        required: true
+    },
     userId: {
         type: String,
         required: true
@@ -13,9 +17,9 @@ const minutesSchema = new Schema({
         type: Number,
         default: 0
     },
-    legibleData: {
-        type: String,
-        required: true
+    level: {
+        type: Number,
+        default: 0
     }
 })
 
