@@ -8,14 +8,16 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node .",
-    "image": "tsx src/libs/canvasImage.ts"
+    "image": "tsx src/libs/canvasImage.ts",
+    "db": "tsx src/libs/database/database.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@napi-rs/canvas": "^0.1.44",
     "discord.js": "^14.14.1",
-    "dotenv": "^16.4.1"
+    "dotenv": "^16.4.1",
+    "mongoose": "^8.1.1"
   },
   "devDependencies": {
     "@types/node": "^20.11.13",
