@@ -116,7 +116,7 @@ Create a zip file containing the following items:
     INDEX_FILE_FOLDER = dist
     ```
 
-2. Go to [free.pylexnodes.net](https://free.pylexnodes.net/) and sign up for a free account.
+2. Go to [client.pylexnodes.net](https://client.pylexnodes.net/dashboard) and sign up for a free account.
 
 3. After logging in, create a new server for your Discord bot using the provided options for a JavaScript-based bot.
 

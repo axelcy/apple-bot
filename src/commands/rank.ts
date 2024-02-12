@@ -1,5 +1,6 @@
 import { SlashCommandBuilder, Client, CommandInteraction } from 'discord.js'
 import path = require('path')
+import 'dotenv/config'
 
 export default {
     slashCommand: new SlashCommandBuilder()
@@ -15,10 +16,16 @@ export default {
         try {
             await interaction.deferReply()
             const buffer = await canvasImage(interaction.options.get('cuenta')?.value?.toString() || '')
-            if (!buffer) return await interaction.reply({ content: `No se encontró la cuenta: ${interaction.options.get('cuenta')?.value?.toString() || ''}`, ephemeral: true })
+            console.log(buffer)
+            if (!buffer) throw new Error('No se encontró la cuenta')
             await interaction.editReply({ files: [buffer] })
         } catch (error) {
-            console.error(`Error en "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}":\n` + error);
+            try {
+                await interaction.editReply({ content: `No se encontró la cuenta: ${interaction.options.get('cuenta')?.value?.toString() || ''}` })
+            }
+            catch (error) {
+                console.error(`Error en "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}":\n` + error);
+            }
         }
     }
 }
@@ -39,7 +46,7 @@ async function fetchData(endpoint: '/account' | '/mmr/latam') {
     try {
         const response = await fetch(`https://api.henrikdev.xyz/valorant/v1${endpoint}/${parsedName}`, {
             headers: {
-                Authorization: 'HDEV-73be5985-8e36-43d0-be8c-ad71124e7bee'
+                Authorization: process.env.HENRIKDEV_KEY || ''
             }
         })
         if (response?.status === 429) console.error('Error: Valorant API Rate Limit Exceeded.')
