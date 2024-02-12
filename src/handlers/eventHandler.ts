@@ -10,10 +10,10 @@ export default async (client: Client) => {
         for (const eventFolder of eventFolders) {
             const eventFiles = getAllFiles(eventFolder)
             if (!eventFiles) continue
-            client.on(eventFolder.split(`${process.env.INDEX_FILE_FOLDER}/events/`)[1], async(arg) => {
+            client.on(eventFolder.split(`${process.env.INDEX_FILE_FOLDER}/events/`)[1], async(arg1, arg2) => {
                 for (const eventFile of eventFiles) {
                     const eventFunction = (await import(`../${eventFile.split(`${process.env.INDEX_FILE_FOLDER}/`)[1]}`)).default
-                    await eventFunction(client, arg)
+                    await eventFunction(client, arg1, arg2)
                 }
             })
         }
