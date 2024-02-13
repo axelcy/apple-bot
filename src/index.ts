@@ -1,4 +1,4 @@
-import { Client, IntentsBitField, VoiceState } from 'discord.js'
+import { Client, IntentsBitField } from 'discord.js'
 import 'dotenv/config'
 import start from './libs/start.js'
 
