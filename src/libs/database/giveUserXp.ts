@@ -5,6 +5,7 @@ import calculateLevel from "../calculateLevel"
 
 export default async (client: Client, memberId: string, guildId: string) => {
     try {
+        if (client.users.cache.get(memberId)?.bot) return
         const user = await User.findOne({ userId: memberId, guildId: guildId })
         if (user) {
             user.minutes += 1
