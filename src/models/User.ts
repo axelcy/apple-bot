@@ -16,11 +16,7 @@ const userSchema = new Schema({
     minutes: {
         type: Number,
         default: 1
-    },
-    level: {
-        type: Number,
-        default: 0
-    },
+    }
 })
 
 export default model('User', userSchema)

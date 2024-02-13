@@ -8,8 +8,8 @@ export default async (client: Client, memberId: string, guildId: string) => {
         const user = await User.findOne({ userId: memberId, guildId: guildId })
         if (user) {
             user.minutes += 1
-            const actualLevel = calculateLevel(user.minutes)
-            if (user.level !== actualLevel.level) user.level = actualLevel.level
+            // const actualLevel = calculateLevel(user.minutes)
+            // if (user.level !== actualLevel.level) user.level = actualLevel.level
             await user.save()
         }
         else {

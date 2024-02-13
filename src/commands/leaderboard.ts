@@ -15,7 +15,8 @@ export default {
             await interaction.deferReply()
             // obtener usuarios con más minutos
             const topUsersAmount = 6
-            const dbTopUsers = await User.find({ guildId: interaction.guild.id }).select('-_id userId level minutes').sort({ minutes: -1 }).limit(topUsersAmount)
+            
+            const dbTopUsers = await User.find({ guildId: interaction.guild.id }).select('-_id userId minutes').sort({ minutes: -1 }).limit(topUsersAmount)
             const discordTopUsers = await Promise.all(dbTopUsers.map(async user => await interaction.guild?.members.fetch(user.userId)))
             const topUsers = []
             for (let i = 0; i < dbTopUsers.length; i++) {
@@ -23,7 +24,7 @@ export default {
                     avatar: discordTopUsers[i]?.user.displayAvatarURL({ size: 256 }).replace('gif', 'png') || 'https://cdn.discordapp.com/embed/avatars/0.png',
                     displayName: discordTopUsers[i]?.displayName || 'Unknown',
                     username: discordTopUsers[i]?.user.tag || '@unknown#0000',
-                    level: dbTopUsers[i].level,
+                    level: calculateLevel(dbTopUsers[i].minutes).level,
                     xp: dbTopUsers[i].minutes,
                     rank: i + 1
                 })

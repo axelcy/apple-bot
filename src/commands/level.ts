@@ -22,10 +22,9 @@ export default {
             const targetUser: GuildMember = await interaction.guild.members.fetch({ user: targetUserId })
 
             const dbUser = await User.findOne({ userId: targetUserId, guildId: interaction.guild.id })
-
             if (!dbUser) return await interaction.editReply(`El usuario **${targetUser.user.tag}** aún no tiene nivel.`)
 
-            let allLevels = await User.find({ guildId: interaction.guild.id }).select('-_id userId level minutes')
+            let allLevels = await User.find({ guildId: interaction.guild.id }).select('-_id userId minutes')
             allLevels = allLevels.sort((a, b) => b.minutes - a.minutes)
             let currentRank: number = allLevels.findIndex(user => user.userId === targetUserId) + 1 || allLevels.length + 1
             const calculatedLevel = calculateLevel(dbUser.minutes)
@@ -36,7 +35,7 @@ export default {
                 .setUsername(`XP Total: ${dbUser.minutes} (1 xp = 1 minuto en voz)`)
                 .setAvatar(targetUser.user.displayAvatarURL({ size: 256 }).replace('gif','png'))
                 .setRank(currentRank)
-                .setLevel(dbUser.level)
+                .setLevel(calculateLevel(dbUser.minutes).level)
                 .setCurrentXP(calculatedLevel.userLevelMinutes)
                 .setRequiredXP(calculatedLevel.levelMinutes)
                 .setStatus((targetUser.presence?.status || 'none') as any)
