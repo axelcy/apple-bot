@@ -1,4 +1,3 @@
-import mongoose from "mongoose"
 import ValorantUser from "../../models/ValorantUser"
 import { Client } from "discord.js"
 

@@ -33,7 +33,7 @@ export default {
             Font.loadDefault()
             const levelCard = new RankCardBuilder()
                 .setDisplayName(`${targetUser.user.displayName} - ${Math.floor(dbUser.minutes / 60)}hs y ${dbUser.minutes % 60}mins`)
-                .setUsername(`XP Total: ${dbUser.minutes} (1 xp = 1 minuto de voz)`)
+                .setUsername(`XP Total: ${dbUser.minutes} (1 xp = 1 minuto en voz)`)
                 .setAvatar(targetUser.user.displayAvatarURL({ size: 256 }).replace('gif','png'))
                 .setRank(currentRank)
                 .setLevel(dbUser.level)

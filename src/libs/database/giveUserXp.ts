@@ -1,4 +1,3 @@
-import mongoose from "mongoose"
 import User from '../../models/User'
 import { Client } from "discord.js"
 import calculateLevel from "../calculateLevel"
