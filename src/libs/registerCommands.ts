@@ -5,7 +5,6 @@ export default async (commands: Object[], client: Client) => {
     try {
         if (!process.env.TOKEN) return console.error('TOKEN not found in .env file.')
         if (!process.env.CLIENT_ID) return console.error('CLIENT_ID not found in .env file.')
-        if (!process.env.GUILD_ID) return console.error('GUILD_ID not found in .env file.')
         const rest = new REST().setToken(process.env.TOKEN)
     
         const CLIENT_ID = process.env.CLIENT_ID
@@ -23,6 +22,7 @@ export default async (commands: Object[], client: Client) => {
             }
         }
         else {
+            if (!process.env.GUILD_ID) return console.error('GUILD_ID not found in .env file.')
             await rest.put(
                 Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
                 { body: commands }
