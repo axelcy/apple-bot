@@ -1,7 +1,6 @@
 import { Client, VoiceState } from 'discord.js'
-import Minutes from '../../models/Minutes'
-import 'dotenv/config'
 import giveUserXp from '../../libs/database/giveUserXp'
+import 'dotenv/config'
 
 const xpAvailableMembers: Set<string> = new Set()
 var interval: NodeJS.Timeout | null = null
@@ -28,6 +27,6 @@ export default async (client: Client, oldState: VoiceState, newState: VoiceState
     if (!interval && xpAvailableMembers.size > 0) {
         interval = setInterval(async () => {
             xpAvailableMembers.forEach((memberId) => giveUserXp(client, memberId, newState.guild.id))
-        }, 1000 * 1) // 60
+        }, 1000 * 60)
     }
 }

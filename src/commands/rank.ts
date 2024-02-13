@@ -19,12 +19,9 @@ export default {
             if (!buffer) throw new Error('No se encontró la cuenta')
             await interaction.editReply({ files: [buffer] })
         } catch (error) {
-            try {
-                await interaction.editReply({ content: `No se encontró la cuenta **${interaction.options.get('cuenta')?.value?.toString() || ''}**` })
-            }
-            catch (error) {
-                console.error(`Error en "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}":\n` + error);
-            }
+            await interaction.editReply({ content: `No se encontró la cuenta **${interaction.options.get('cuenta')?.value?.toString() || ''}**` })
+            .catch(() => console.error('Error sending reply'))
+            console.error(`Error en "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}":\n` + error);
         }
     }
 }

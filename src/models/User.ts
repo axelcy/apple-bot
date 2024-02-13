@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose"
 
-const minutesSchema = new Schema({
+const userSchema = new Schema({
     legibleData: {
         type: String,
         required: true
@@ -15,12 +15,12 @@ const minutesSchema = new Schema({
     },
     minutes: {
         type: Number,
-        default: 0
+        default: 1
     },
     level: {
         type: Number,
         default: 0
-    }
+    },
 })
 
-export default model('Minutes', minutesSchema)
+export default model('User', userSchema)

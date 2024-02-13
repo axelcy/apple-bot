@@ -9,12 +9,14 @@
     "build": "tsc",
     "start": "node .",
     "image": "tsx src/libs/canvasImage.ts",
+    "image2": "tsx test.ts",
     "db": "tsx src/libs/database/database.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@napi-rs/canvas": "^0.1.44",
+    "canvacord": "^6.0.1",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.1",
     "mongoose": "^8.1.1"
