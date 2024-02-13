@@ -1,6 +1,4 @@
 import { Client, IntentsBitField, VoiceState } from 'discord.js'
-import eventHandler from './handlers/eventHandler.js'
-import mongoose from 'mongoose'
 import 'dotenv/config'
 import start from './libs/start.js'
 
