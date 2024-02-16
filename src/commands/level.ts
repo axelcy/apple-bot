@@ -28,10 +28,14 @@ export default {
             allLevels = allLevels.sort((a, b) => b.minutes - a.minutes)
             let currentRank: number = allLevels.findIndex(user => user.userId === targetUserId) + 1 || allLevels.length + 1
             const calculatedLevel = calculateLevel(dbUser.minutes)
-
+            const displayName = {
+                days: Math.floor(dbUser.minutes / 60 / 24),
+                hours: Math.floor(dbUser.minutes / 60 % 24),
+                minutes: dbUser.minutes % 60
+            }
             Font.loadDefault()
             const levelCard = new RankCardBuilder()
-                .setDisplayName(`${targetUser.user.displayName} - ${Math.floor(dbUser.minutes / 60)}hs y ${dbUser.minutes % 60}mins`)
+                .setDisplayName(`${targetUser.user.displayName} - ${displayName.days}d ${displayName.hours}hs y ${displayName.minutes}mins`)
                 .setUsername(`XP Total: ${dbUser.minutes} (1 xp = 1 minuto en voz)`)
                 .setAvatar(targetUser.user.displayAvatarURL({ size: 256 }).replace('gif','png'))
                 .setRank(currentRank)
