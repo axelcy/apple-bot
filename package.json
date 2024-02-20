@@ -19,7 +19,8 @@
     "canvacord": "^6.0.1",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.1",
-    "mongoose": "^8.1.1"
+    "mongoose": "^8.1.1",
+    "replicate": "^0.27.1"
   },
   "devDependencies": {
     "@types/node": "^20.11.13",
