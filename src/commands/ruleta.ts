@@ -1,4 +1,5 @@
 import { SlashCommandBuilder, Client, CommandInteraction, EmbedBuilder, GuildMember } from 'discord.js'
+import { consoleError, messageError } from '../libs/error-handler'
 import path = require('path')
 
 export default {
@@ -30,7 +31,7 @@ export default {
                     .setColor('Random')
                     .setTitle(`Mapa: ${valorantMaps[Math.floor(Math.random() * valorantMaps.length)] || 'Mapa no encontrado'}`)
                     .setAuthor({
-                        name: `Ruleta de ${(interaction.member as GuildMember).nickname || interaction.user.displayName}`,
+                        name: `/Ruleta de ${(interaction.member as GuildMember).nickname || interaction.user.displayName}`,
                         iconURL: interaction.user.displayAvatarURL(({ dynamic: true } as any)),
                     })
                     .setThumbnail('https://cdn-icons-png.flaticon.com/512/10199/10199802.png')
@@ -48,10 +49,10 @@ export default {
             }
         } catch (error) {
             try {
-                await interaction.editReply(`Hubo un error con el comando /${path.basename(__filename, path.extname(__filename))}.`)
+                await interaction.editReply(messageError(error, __filename))
             }
             catch (error) {
-                console.error(`Error en "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}":\n` + error)
+                console.error(consoleError(error, __filename))
             }
         }
     }

@@ -1,4 +1,5 @@
 import { SlashCommandBuilder, Client, CommandInteraction, GuildMember, AttachmentBuilder } from 'discord.js'
+import { consoleError, messageError } from '../libs/error-handler'
 import path = require('path')
 import User from '../models/User'
 import { RankCardBuilder, Font } from 'canvacord'
@@ -7,10 +8,10 @@ import calculateLevel from '../libs/calculateLevel'
 export default {
     slashCommand: new SlashCommandBuilder()
         .setName(path.basename(__filename, path.extname(__filename)))
-        .setDescription('Muestra tu nivel o el de otro usuario')
+        .setDescription('Muestra tu nivel o el de otro usuario.')
         .addMentionableOption(option =>
             option.setName('usuario')
-                .setDescription('Usuario del que quieres ver el nivel')
+                .setDescription('Usuario del que quieres ver el nivel.')
                 .setRequired(false)
         )
     ,
@@ -49,10 +50,10 @@ export default {
             await interaction.editReply({ files: [new AttachmentBuilder(image)] })
         } catch (error) {
             try {
-                await interaction.editReply(`Hubo un error con el comando /${path.basename(__filename, path.extname(__filename))}.`)
+                await interaction.editReply(messageError(error, __filename))
             }
             catch (error) {
-                console.error(`Error en "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}":\n` + error)
+                console.error(consoleError(error, __filename))
             }
         }
     }

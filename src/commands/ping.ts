@@ -1,4 +1,5 @@
 import { Client, CommandInteraction, SlashCommandBuilder } from 'discord.js'
+import { consoleError, messageError } from '../libs/error-handler'
 import path = require('path')
 
 export default {
@@ -14,10 +15,10 @@ export default {
             await interaction.editReply(`🏓 Pong! Client: ${ping}ms | Websocket: ${client.ws.ping}ms`)
         } catch (error) {
             try {
-                await interaction.editReply(`Hubo un error con el comando /${path.basename(__filename, path.extname(__filename))}.`)
+                await interaction.editReply(messageError(error, __filename))
             }
             catch (error) {
-                console.error(`Error en "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}":\n` + error)
+                console.error(consoleError(error, __filename))
             }
         }
     }

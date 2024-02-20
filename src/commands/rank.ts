@@ -1,4 +1,5 @@
 import { SlashCommandBuilder, Client, CommandInteraction } from 'discord.js'
+import { consoleError, messageError } from '../libs/error-handler'
 import path = require('path')
 import 'dotenv/config'
 
@@ -8,7 +9,7 @@ export default {
         .setDescription('Genera una imagen con la información de la cuenta de Valorant.')
         .addStringOption(option =>
             option.setName('cuenta')
-                .setDescription('Cuenta de Valorant (nombre#tag)')
+                .setDescription('Cuenta de Valorant (nombre#tag).')
                 .setRequired(false)
         )
         .addMentionableOption(option =>
@@ -44,9 +45,10 @@ export default {
             await interaction.editReply({ files: [buffer] })
         } catch (error) {
             try {
-                await interaction.editReply(`No se encontró la cuenta **${valorantAccount}**`)
-            } catch (error) {
-                console.error(`Error en "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}":\n` + error);
+                await interaction.editReply(messageError(error, __filename))
+            }
+            catch (error) {
+                console.error(consoleError(error, __filename))
             }
         }
     }

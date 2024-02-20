@@ -1,5 +1,6 @@
 import { SlashCommandBuilder, Client, CommandInteraction } from 'discord.js'
 import path = require('path')
+import { consoleError, messageError } from '../libs/error-handler'
 
 export default {
     slashCommand: new SlashCommandBuilder()
@@ -10,12 +11,15 @@ export default {
         try {
             await interaction.deferReply()
             await interaction.editReply('Un saludo, humano. 🤖👋🏼')
+            console.log(__filename)
+            // console.log(path.basename(__filename, path.extname(__filename)))
+            
         } catch (error) {
             try {
-                await interaction.editReply(`Hubo un error con el comando /${path.basename(__filename, path.extname(__filename))}.`)
+                await interaction.editReply(messageError(error, __filename))
             }
             catch (error) {
-                console.error(`Error en "${path.basename(__filename, path.extname(__filename))}${path.extname(__filename)}":\n` + error)
+                console.error(consoleError(error, __filename))
             }
         }
     }
