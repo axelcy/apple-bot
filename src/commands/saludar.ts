@@ -11,9 +11,6 @@ export default {
         try {
             await interaction.deferReply()
             await interaction.editReply('Un saludo, humano. 🤖👋🏼')
-            console.log(__filename)
-            // console.log(path.basename(__filename, path.extname(__filename)))
-            
         } catch (error) {
             try {
                 await interaction.editReply(messageError(error, __filename))

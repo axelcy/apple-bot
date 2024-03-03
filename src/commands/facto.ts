@@ -148,10 +148,10 @@ export default {
                 await suggestionMessage?.edit({
                     content: 'Error al crear el mensaje.',
                 })
-                console.error(consoleError(error, __filename))
+                // console.error(consoleError(error, __filename))
             }
             catch (error) {
-                console.error(consoleError(error, __filename))
+                // console.error(consoleError(error, __filename))
             }
         }
     }

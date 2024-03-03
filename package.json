@@ -7,10 +7,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node .",
-    "image": "tsx src/libs/canvasImage.ts",
-    "image2": "tsx test.ts",
-    "db": "tsx src/libs/database/database.ts"
+    "start": "node ."
   },
   "author": "",
   "license": "ISC",

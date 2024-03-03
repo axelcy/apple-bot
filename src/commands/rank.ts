@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, Client, CommandInteraction } from 'discord.js'
+import { SlashCommandBuilder, Client, CommandInteraction, ButtonBuilder, ButtonStyle, ActionRowBuilder } from 'discord.js'
 import { consoleError, messageError } from '../libs/error-handler'
 import path = require('path')
 import 'dotenv/config'
@@ -42,10 +42,19 @@ export default {
 
             const buffer = await canvasImage(valorantAccount)
             if (!buffer) throw new Error('No se encontró la cuenta')
-            await interaction.editReply({ files: [buffer] })
+
+            const TRACKER_URL = 'https://tracker.gg/valorant/profile/riot'
+            const trackerButton = new ButtonBuilder()
+                .setEmoji(valorantAccount === 'CLG Santik2010#TRUJO' ? '🗿' : '🔗')
+                .setLabel('Valorant Tracker')
+                .setStyle(ButtonStyle.Link)
+                .setURL(`${TRACKER_URL}/${valorantAccount.replace(/ /g, '%20').replace(/#/g, '%23')}/overview`)
+
+            const actionRow = new ActionRowBuilder().addComponents(trackerButton)
+            await interaction.editReply({ files: [buffer], components: [(actionRow as any)] })
         } catch (error) {
             try {
-                await interaction.editReply(messageError(error, __filename))
+                await interaction.editReply(`No se encontró la cuenta: *${interaction.options.get('cuenta')?.value?.toString() || ''}*`)
             }
             catch (error) {
                 console.error(consoleError(error, __filename))
