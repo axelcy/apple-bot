@@ -43,7 +43,7 @@ export default {
                     .setTimestamp()
                     .setFooter({
                         text: 'Ruleta de mapas de Valorant. (/ruleta)',
-                        iconURL: 'https://cdn.discordapp.com/avatars/1052362161051144243/357ba487db9ba7e60449f0d962db388c.png',
+                        iconURL: client.user?.displayAvatarURL(({ dynamic: true } as any)),
                     })
                 await interaction.editReply({ embeds: [embed] })
             }
