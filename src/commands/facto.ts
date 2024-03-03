@@ -9,7 +9,6 @@ import {
     GuildMember,
     ButtonBuilder,
     ButtonStyle,
-    Interaction,
     Message,
     ModalSubmitInteraction
 } from 'discord.js'
@@ -18,8 +17,6 @@ import { consoleError, messageError } from '../libs/error-handler'
 import formatResults from '../libs/formatResults'
 import Suggestion from '../models/Suggestion'
 
-const xpAvailableMembers: Set<string> = new Set()
-
 export default {
     slashCommand: new SlashCommandBuilder()
         .setName(path.basename(__filename, path.extname(__filename)))
@@ -27,6 +24,7 @@ export default {
         .setDMPermission(false)
     ,
     callback: async (client: Client, interaction: CommandInteraction) => {
+        let suggestionMessage
         try {
             const suggestionName = 'facto'
 
@@ -39,11 +37,22 @@ export default {
                 .setLabel(`Escribe tu ${suggestionName}`)
                 .setStyle(TextInputStyle.Paragraph)
                 .setRequired(true)
-                .setMaxLength(250)
+                .setMaxLength(500)
 
-            const modalActionRow = new ActionRowBuilder().addComponents(textInput)
+            const imageUrlInput = new TextInputBuilder()
+                .setCustomId(`suggestion-image`)
+                .setLabel(`Enlace foto ${suggestionName}`)
+                .setStyle(TextInputStyle.Short)
+                .setRequired(false)
+                .setMaxLength(4000)
 
-            modal.addComponents(modalActionRow as any)
+            const modalFirstActionRow = new ActionRowBuilder().addComponents(textInput)
+            const modalSecondActionRow = new ActionRowBuilder().addComponents(imageUrlInput)
+
+            modal.addComponents(
+                modalFirstActionRow as any,
+                modalSecondActionRow as any
+            )
 
             await interaction.showModal(modal)
 
@@ -55,7 +64,7 @@ export default {
             // .catch(error => console.log('Time out'))
 
             await modalInteraction.deferReply({ ephemeral: true })
-            let suggestionMessage
+
             try {
                 suggestionMessage = await interaction.channel?.send(`Creando ${suggestionName}...`) as Message
             }
@@ -64,14 +73,17 @@ export default {
             }
             if (!suggestionMessage?.id) return modalInteraction.editReply('Error al crear el mensaje.')
             const suggestionText = modalInteraction.fields.getTextInputValue('suggestion-input')
-            
+            let suggestionImage: string | undefined = modalInteraction.fields.getTextInputValue('suggestion-image')
+            const suggestionStringIsImage: boolean = suggestionImage?.match(/^https?:\/\/.+\.(jpg|jpeg|png|webp|avif|gif|svg)$/) != null
+
             const newSuggestion = new Suggestion({
                 authorId: interaction.user.id,
                 guildId: interaction.guildId,
                 messageId: suggestionMessage.id,
-                content: suggestionText
+                content: suggestionText,
+                image: suggestionStringIsImage ? suggestionImage : undefined
             })
-            await newSuggestion.save()
+            // await newSuggestion.save()
 
             modalInteraction.editReply(`${suggestionName} creado!`)
 
@@ -91,6 +103,7 @@ export default {
                     iconURL: client.user?.displayAvatarURL(({ dynamic: true } as any)),
                 })
                 .setTimestamp()
+            if (suggestionImage.match(/^https?:\/\/.+\.(jpg|jpeg|png|webp|avif|gif|svg)$/) != null) suggestionEmbed.setImage(suggestionImage)
 
             const upvoteButton = new ButtonBuilder()
                 .setEmoji('👍')
@@ -121,6 +134,7 @@ export default {
             )
             // const embedSecondActionRow = new ActionRowBuilder().addComponents(approveButton, rejectButton)
 
+            await newSuggestion.save()
             suggestionMessage?.edit({
                 // content: `${interaction.user} Facto creado!`,
                 content: null,
@@ -131,6 +145,9 @@ export default {
         } catch (error) {
             try {
                 await interaction.editReply(messageError(error, __filename))
+                await suggestionMessage?.edit({
+                    content: 'Error al crear el mensaje.',
+                })
                 console.error(consoleError(error, __filename))
             }
             catch (error) {

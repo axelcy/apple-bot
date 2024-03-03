@@ -23,6 +23,10 @@ const suggestionSchema = new Schema({
         type: String,
         required: true
     },
+    image: {
+        type: String,
+        required: false
+    },
     status: {
         type: String,
         // 'pending', 'approved', 'rejected'

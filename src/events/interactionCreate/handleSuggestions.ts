@@ -30,6 +30,7 @@ export default async (client: Client, interaction: Interaction) => {
                     iconURL: client.user?.displayAvatarURL(({ dynamic: true } as any)),
                 })
                 .setTimestamp()
+            if (targetSuggestion.image) editedSuggestionEmbed.setImage(targetSuggestion.image)
 
             if (action === 'approve') {
                 if (!interaction.memberPermissions?.has('ManageMessages')) {
