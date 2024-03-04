@@ -4,4 +4,3 @@ node_modules
 dist
 config.json
 testing
-*.png
