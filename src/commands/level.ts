@@ -53,7 +53,7 @@ export default {
                 await interaction.editReply(messageError(error, __filename))
             }
             catch (error) {
-                console.error(consoleError(error, __filename))
+                // console.error(consoleError(error, __filename))
             }
         }
     }
