@@ -9,12 +9,12 @@ export default {
         .setDescription('Genera una imagen con la información de la cuenta de Valorant.')
         .addStringOption(option =>
             option.setName('cuenta')
-                .setDescription('Cuenta de Valorant (nombre#tag).')
+                .setDescription('Cuenta de Valorant (nombre#tag)')
                 .setRequired(false)
         )
         .addMentionableOption(option =>
-            option.setName('usuario')
-                .setDescription('@Usuario')
+            option.setName('discord-user')
+                .setDescription('@Usuario de discord')
                 .setRequired(false)
         )
     ,
@@ -23,7 +23,7 @@ export default {
         try {
             await interaction.deferReply()
             const accountOptions = {
-                mention: interaction.options.get('usuario')?.value?.toString() || undefined,
+                mention: interaction.options.get('discord-user')?.value?.toString() || undefined,
                 account: interaction.options.get('cuenta')?.value?.toString() || undefined,
                 interaction: interaction.user.id
             }
@@ -45,8 +45,8 @@ export default {
 
             const TRACKER_URL = 'https://tracker.gg/valorant/profile/riot'
             const trackerButton = new ButtonBuilder()
-                .setEmoji(valorantAccount === 'CLG Santik2010#TRUJO' ? '🗿' : '🔗')
-                .setLabel('Valorant Tracker')
+                .setEmoji('<:trn:675036413128998922>')
+                .setLabel(valorantAccount)
                 .setStyle(ButtonStyle.Link)
                 .setURL(`${TRACKER_URL}/${valorantAccount.replace(/ /g, '%20').replace(/#/g, '%23')}/overview`)
 
