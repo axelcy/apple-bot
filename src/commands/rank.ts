@@ -254,8 +254,9 @@ export async function canvasImage(name: string): Promise<Buffer | undefined> {
         var completedBarProgress
         if (mmr.ranking_in_tier > 1) completedBarProgress = mmr.ranking_in_tier / 100
         else if (mmr.ranking_in_tier === 1) completedBarProgress = 2
-
-        if (completedBarProgress) roundRect({ ...bar, width: bar.width * (mmr.ranking_in_tier / 100) })
+        
+        const ranking_in_tier_up_to_100 = mmr.ranking_in_tier > 100 ? 100 : mmr.ranking_in_tier
+        if (completedBarProgress) roundRect({ ...bar, width: bar.width * (ranking_in_tier_up_to_100 / 100) })
 
         const rankRatingTextMarginY = 40
         const rankRatingTextMarginX = 10
