@@ -63,7 +63,7 @@ export default {
             var globalServerId
             if (process.env.NODE_ENV === 'development') globalServerId = developmentServerId
             if (process.env.NODE_ENV === 'production') globalServerId = productionServerId
-            if (!globalServerId) return
+            if (!globalServerId) return await interaction.editReply(messageError('Hubo un error, prueba de nuevo :('))
             if (interaction.guildId === globalServerId) {
                 const claimRankButton = new ButtonBuilder()
                     .setEmoji(tierRanksEmojis[mmr.currenttierpatched])
