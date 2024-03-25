@@ -7,8 +7,8 @@ export default async (client: Client, interaction: Interaction) => {
     try {
         if (!interaction.isButton() || !interaction.customId) return
         const [type, suggestionId, action] = interaction.customId.split('.')
-        if (!type || !suggestionId || !action) return
         if (type !== 'suggestion') return
+        if (!type || !suggestionId || !action) return
         await interaction.deferReply({ ephemeral: true })
 
         const targetSuggestion = await Suggestion.findOne({ suggestionId })

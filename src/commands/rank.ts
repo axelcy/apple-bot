@@ -2,6 +2,10 @@ import { SlashCommandBuilder, Client, CommandInteraction, ButtonBuilder, ButtonS
 import { consoleError, messageError } from '../libs/error-handler'
 import path = require('path')
 import 'dotenv/config'
+import { tierRanksEmojis } from '../mocks/ranks-colors'
+import getValorantData from '../libs/getValorantData'
+import { developmentServerId } from '../global/development'
+import { productionServerId } from '../global/production'
 
 export default {
     slashCommand: new SlashCommandBuilder()
@@ -40,18 +44,41 @@ export default {
             else if (accountOptions.account) valorantAccount = accountOptions.account
             else throw new Error('No se encontró la cuenta')
 
-            const buffer = await canvasImage(valorantAccount)
+            const [account, mmr] = await Promise.all([
+                getValorantData('/account', valorantAccount),
+                getValorantData('/mmr/latam', valorantAccount)
+            ])
+            const buffer = await canvasImage(account, mmr)
             if (!buffer) throw new Error('No se encontró la cuenta')
 
             const TRACKER_URL = 'https://tracker.gg/valorant/profile/riot'
+            const TRACKER_ACCOUNT_OVERVIEW = `${TRACKER_URL}/${valorantAccount.replace(/ /g, '%20').replace(/#/g, '%23')}/overview`
             const trackerButton = new ButtonBuilder()
                 .setEmoji('<:trn:675036413128998922>')
                 .setLabel(valorantAccount)
                 .setStyle(ButtonStyle.Link)
-                .setURL(`${TRACKER_URL}/${valorantAccount.replace(/ /g, '%20').replace(/#/g, '%23')}/overview`)
+                .setURL(TRACKER_ACCOUNT_OVERVIEW)
 
-            const actionRow = new ActionRowBuilder().addComponents(trackerButton)
-            await interaction.editReply({ files: [buffer], components: [(actionRow as any)] })
+            // Si el comando está en privadas de valo
+            var globalServerId
+            if (process.env.NODE_ENV === 'development') globalServerId = developmentServerId
+            if (process.env.NODE_ENV === 'production') globalServerId = productionServerId
+            if (!globalServerId) return
+            if (interaction.guildId === globalServerId) {
+                const claimRankButton = new ButtonBuilder()
+                    .setEmoji(tierRanksEmojis[mmr.currenttierpatched])
+                    .setLabel('Reclamá tu rango')
+                    .setStyle(ButtonStyle.Success)
+                    .setCustomId(`claimrankrole.${valorantAccount}.${mmr.currenttierpatched}`)
+
+                const actionRow = new ActionRowBuilder().addComponents(trackerButton, claimRankButton)
+                await interaction.editReply({ files: [buffer], components: [(actionRow as any)] })
+            }
+            else {
+                const actionRow = new ActionRowBuilder().addComponents(trackerButton)
+                await interaction.editReply({ files: [buffer], components: [(actionRow as any)] })
+            }
+
         } catch (error) {
             try {
                 await interaction.editReply(`No se encontró la cuenta: *${interaction.options.get('cuenta')?.value?.toString() || ''}*`)
@@ -68,29 +95,8 @@ import * as Canvas from '@napi-rs/canvas'
 import { tierColors, unrankedData, tierTranslations } from '../mocks/ranks-colors'
 import ValorantUser from '../models/ValorantUser'
 
-// LINKS DE LA API
-// https://api.henrikdev.xyz/valorant/v1/account/CLG%20Manzana%20Roja/love
-// https://api.henrikdev.xyz/valorant/v1/mmr/latam/CLG%20Manzana%20Roja/love
-
-export async function canvasImage(name: string): Promise<Buffer | undefined> {
+export async function canvasImage(account: any, mmr: any): Promise<Buffer | undefined> {
     try {
-
-        async function fetchData(endpoint: '/account' | '/mmr/latam') {
-            const parsedName = name.replace(/ /g, '%20').replace(/#/g, '/')
-            try {
-                const response = await fetch(`https://api.henrikdev.xyz/valorant/v1${endpoint}/${parsedName}`, {
-                    headers: {
-                        Authorization: process.env.HENRIKDEV_KEY || ''
-                    }
-                })
-                if (response?.status === 429) console.error('Error: Valorant API Rate Limit Exceeded.')
-                return (await response.json()).data
-            } catch (error) {
-                console.error('Error fetching valorant data:\n' + error)
-            }
-        }
-
-        const [account, mmr] = await Promise.all([fetchData('/account'), fetchData('/mmr/latam')])
         if (!account || !mmr) return undefined
         Canvas.GlobalFonts.loadFontsFromDir('public/fonts')
         const divisionX = 230
@@ -254,7 +260,7 @@ export async function canvasImage(name: string): Promise<Buffer | undefined> {
         var completedBarProgress
         if (mmr.ranking_in_tier > 1) completedBarProgress = mmr.ranking_in_tier / 100
         else if (mmr.ranking_in_tier === 1) completedBarProgress = 2
-        
+
         const ranking_in_tier_up_to_100 = mmr.ranking_in_tier > 100 ? 100 : mmr.ranking_in_tier
         if (completedBarProgress) roundRect({ ...bar, width: bar.width * (ranking_in_tier_up_to_100 / 100) })
 
