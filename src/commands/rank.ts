@@ -7,6 +7,8 @@ import getValorantData from '../libs/getValorantData'
 import { developmentServerId } from '../global/development'
 import { productionServerId } from '../global/production'
 
+const IMMORTAL_ELO = 2100
+
 export default {
     slashCommand: new SlashCommandBuilder()
         .setName(path.basename(__filename, path.extname(__filename)))
@@ -98,6 +100,7 @@ import ValorantUser from '../models/ValorantUser'
 export async function canvasImage(account: any, mmr: any): Promise<Buffer | undefined> {
     try {
         if (!account || !mmr) return undefined
+        const isImmortal = mmr.elo >= IMMORTAL_ELO
         Canvas.GlobalFonts.loadFontsFromDir('public/fonts')
         const divisionX = 230
 
@@ -266,15 +269,20 @@ export async function canvasImage(account: any, mmr: any): Promise<Buffer | unde
 
         const rankRatingTextMarginY = 40
         const rankRatingTextMarginX = 10
+        const hundredTextWidth = isImmortal ? 0 : ctx.measureText('/ 100').width
         ctx.font = `25px Ubuntu`
-        ctx.fillText(
+        !isImmortal ? ctx.fillText(
             mmr.ranking_in_tier.toString(),
             divisionX + bar.width - ctx.measureText((mmr.ranking_in_tier + '/ 100').toString()).width - rankRatingTextMarginX,
+            bar.y + bar.height + rankRatingTextMarginY
+        ) : ctx.fillText(
+            mmr.ranking_in_tier.toString(),
+            divisionX + bar.width - ctx.measureText(mmr.ranking_in_tier.toString()).width - rankRatingTextMarginX,
             bar.y + bar.height + rankRatingTextMarginY
         )
         ctx.fillStyle = '#f3f3f3'
         ctx.fillText('RANK RATING', divisionX + rankRatingTextMarginX, bar.y + bar.height + rankRatingTextMarginY)
-        ctx.fillText(
+        !isImmortal && ctx.fillText(
             ' / 100',
             divisionX + bar.width - ctx.measureText('/ 100'.toString()).width - rankRatingTextMarginX,
             bar.y + bar.height + rankRatingTextMarginY
